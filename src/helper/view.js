@@ -9,18 +9,22 @@ import log from '../log/log';
 // canvases of ART_BOARD size.
 // (This is for backwards compatibility, to handle both assets
 // designed for 480 x 360, and bitmap resolution 2 bitmaps)
-const SVG_ART_BOARD_WIDTH = 480;
-const SVG_ART_BOARD_HEIGHT = 360;
-const ART_BOARD_WIDTH = SVG_ART_BOARD_WIDTH * 2;
-const ART_BOARD_HEIGHT = SVG_ART_BOARD_HEIGHT * 2;
-const CENTER = new paper.Point(ART_BOARD_WIDTH / 2, ART_BOARD_HEIGHT / 2);
+// const SVG_ART_BOARD_WIDTH = 480;
+// const SVG_ART_BOARD_HEIGHT = 360;
+// 将官方尺寸修改为我们自定义的默认舞台区域尺寸
+let SVG_ART_BOARD_WIDTH = 480;
+let SVG_ART_BOARD_HEIGHT = 800;
+let ART_BOARD_WIDTH = SVG_ART_BOARD_WIDTH * 2;
+let ART_BOARD_HEIGHT = SVG_ART_BOARD_HEIGHT * 2;
+let CENTER = new paper.Point(ART_BOARD_WIDTH / 2, ART_BOARD_HEIGHT / 2);
 const PADDING_PERCENT = 25; // Padding as a percent of the max of width/height of the sprite
 const BUFFER = 50; // Number of pixels of allowance around objects at the edges of the workspace
 const MIN_RATIO = .125; // Zoom in to at least 1/8 of the screen. This way you don't end up incredibly
 //                         zoomed in for tiny costumes.
-const OUTERMOST_ZOOM_LEVEL = 0.333;
-const ART_BOARD_BOUNDS = new paper.Rectangle(0, 0, ART_BOARD_WIDTH, ART_BOARD_HEIGHT);
-const MAX_WORKSPACE_BOUNDS = new paper.Rectangle(
+// const OUTERMOST_ZOOM_LEVEL = 0.333;
+const OUTERMOST_ZOOM_LEVEL = 0.05; // 原版官方缩小到最小的是 0.333（相当于 66.6%），改成 0.05（相当于 10%）
+let ART_BOARD_BOUNDS = new paper.Rectangle(0, 0, ART_BOARD_WIDTH, ART_BOARD_HEIGHT);
+let MAX_WORKSPACE_BOUNDS = new paper.Rectangle(
     -ART_BOARD_WIDTH / 4,
     -ART_BOARD_HEIGHT / 4,
     ART_BOARD_WIDTH * 1.5,
@@ -201,6 +205,37 @@ const zoomToFit = isBitmap => {
     }
 };
 
+/**
+ * 调整 SVG_ART_BOARD_WIDTH、SVG_ART_BOARD_HEIGHT 数值后，重新设置相关的变量
+ */
+const reset = () => {
+    ART_BOARD_WIDTH = SVG_ART_BOARD_WIDTH * 2;
+    ART_BOARD_HEIGHT = SVG_ART_BOARD_HEIGHT * 2;
+    CENTER = new paper.Point(ART_BOARD_WIDTH / 2, ART_BOARD_HEIGHT / 2);
+
+    ART_BOARD_BOUNDS = new paper.Rectangle(0, 0, ART_BOARD_WIDTH, ART_BOARD_HEIGHT);
+    MAX_WORKSPACE_BOUNDS = new paper.Rectangle(
+        -ART_BOARD_WIDTH / 4,
+        -ART_BOARD_HEIGHT / 4,
+        ART_BOARD_WIDTH * 1.5,
+        ART_BOARD_HEIGHT * 1.5);
+
+    _workspaceBounds = ART_BOARD_BOUNDS;
+}
+
+/**
+ * 设置 paint 可编辑区域的宽高，并且重置与其相关的变量
+ *  PS：这种做法不算很好的设计，只是暂时可以实现功能，后期看有没有更好的方案优化优化
+ * @param {number} width 可编辑区域的宽度
+ * @param {number} height 可编辑区域的高度
+ */
+const setSvgArtBoardWidthHeight = (width, height) => {
+    SVG_ART_BOARD_WIDTH = width;
+    SVG_ART_BOARD_HEIGHT = height;
+
+    reset();
+}
+
 export {
     ART_BOARD_BOUNDS,
     ART_BOARD_HEIGHT,
@@ -219,5 +254,7 @@ export {
     resizeCrosshair,
     zoomOnSelection,
     zoomOnFixedPoint,
-    zoomToFit
+    zoomToFit,
+
+    setSvgArtBoardWidthHeight,
 };

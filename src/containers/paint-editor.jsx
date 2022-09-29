@@ -208,22 +208,38 @@ class PaintEditor extends React.Component {
             }
         }
     }
+
+    /**
+     * 放大
+     */
     handleZoomIn () {
         // Make the "next step" after the outermost zoom level be the default
         // zoom level (0.5)
-        let zoomIncrement = PaintEditor.ZOOM_INCREMENT;
-        if (paper.view.zoom === OUTERMOST_ZOOM_LEVEL) {
-            zoomIncrement = 0.5 - OUTERMOST_ZOOM_LEVEL;
-        }
-        zoomOnSelection(zoomIncrement);
+
+        // 官方版本是使用这套逻辑来做放大缩小
+        // let zoomIncrement = PaintEditor.ZOOM_INCREMENT;
+        // if (paper.view.zoom === OUTERMOST_ZOOM_LEVEL) {
+        //     zoomIncrement = 0.5 - OUTERMOST_ZOOM_LEVEL;
+        // }
+        // zoomOnSelection(zoomIncrement);
+
+        // 直接改成每次固定放大 0.05（相当于放大 10%）
+        zoomOnSelection(0.05);
         this.props.updateViewBounds(paper.view.matrix);
         this.handleSetSelectedItems();
     }
+
+    /**
+     * 缩小
+     */
     handleZoomOut () {
-        zoomOnSelection(-PaintEditor.ZOOM_INCREMENT);
+        // zoomOnSelection(-PaintEditor.ZOOM_INCREMENT);
+        // 直接改成每次固定缩小 0.05（相当于缩小 10%）
+        zoomOnSelection(-0.05);
         this.props.updateViewBounds(paper.view.matrix);
         this.handleSetSelectedItems();
     }
+
     handleZoomReset () {
         resetZoom();
         this.props.updateViewBounds(paper.view.matrix);

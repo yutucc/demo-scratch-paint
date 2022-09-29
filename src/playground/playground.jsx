@@ -1,7 +1,7 @@
 import bindAll from 'lodash.bindall';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PaintEditor from '..';
+import PaintEditor, { setSvgArtBoardWidthHeight } from '..';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import reducer from './reducers/combine-reducers';
@@ -49,6 +49,7 @@ class Playground extends React.Component {
             image: svgString, // svg string or data URI
             imageId: this.id, // If this changes, the paint editor will reload
             rtl: rtl,
+            paintEditorKey: (new Date).valueOf(),
         };
         this.reusableCanvas = document.createElement('canvas');
     }
@@ -177,6 +178,18 @@ class Playground extends React.Component {
                 <button className={styles.playgroundButton}  onClick={this.uploadImage}>Upload</button>
                 <input id={styles.fileInput} type="file" name="name" onChange={this.onUploadImage} />
                 <button className={styles.playgroundButton} onClick={this.downloadImage}>Download</button>
+                <button className={styles.playgroundButton} onClick={() => {
+                    setSvgArtBoardWidthHeight(480, 800);
+                    this.setState({ paintEditorKey: (new Date).valueOf(), });
+                }}>480,800</button>
+                <button className={styles.playgroundButton} onClick={() => {
+                    setSvgArtBoardWidthHeight(480, 360);
+                    this.setState({ paintEditorKey: (new Date).valueOf(), });
+                }}>480,360</button>
+                <button className={styles.playgroundButton} onClick={() => {
+                    setSvgArtBoardWidthHeight(1280, 720);
+                    this.setState({ paintEditorKey: (new Date).valueOf(), });
+                }}>1280,720</button>
             </div>
         );
     }
